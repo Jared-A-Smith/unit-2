@@ -1,5 +1,5 @@
 // Add all scripts to the JS folder
-// Create map variable and set initial lat/long position and zoom level
+// Create map variable and set initial center useing lat/long and initial zoom level
 var map = L.map('map').setView([51.505, -0.09], 13);
 
 // include tile desired tile layer (by URL), define MAX zoom extent and provide citation to source

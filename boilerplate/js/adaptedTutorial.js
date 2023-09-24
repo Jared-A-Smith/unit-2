@@ -1,4 +1,3 @@
-// Add all scripts to the JS folder
 /* Map of GeoJSON data from MegaCities.geojson */
 //declare map var in global scope
 var map;
@@ -18,7 +17,15 @@ function createMap(){
     //call getData function
     getData();
 };
-
+function onEachFeature(feature,layer){
+    var popupContent="";
+    if (feature.properties){
+        for (var property in feature.properties){
+            popupContent +="<p>"+property +": " + feature.properties[property] +"</p>";
+        }
+        layer.bindPopup(popupContent);
+    }
+}
 //function to retrieve the data and place it on the map
 function getData(){
     //load the data
@@ -27,9 +34,24 @@ function getData(){
             return response.json();
         })
         .then(function(json){
+            //create marker options
+            var geojsonMarkerOptions={
+                raidus:8,
+                fillColor: "#ff7800",
+                color: "#000",
+                weight: 1,
+                opacity: 1,
+                fillOpacity: 0.8
+            };
             //create a Leaflet GeoJSON layer and add it to the map
-            L.geoJson(json).addTo(map);
+            L.geoJson(json, {
+                onEachFeature,
+                pointToLayer: function(feature,latlng){ 
+                    return L.circleMarker(latlng, geojsonMarkerOptions);
+        
+                }
+            }).addTo(map);
         })
-};
+    };
 
 document.addEventListener('DOMContentLoaded',createMap)
