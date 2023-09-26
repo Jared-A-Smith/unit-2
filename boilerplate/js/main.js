@@ -1,57 +1,62 @@
-// Add all scripts to the JS folder
-// Create map variable and set initial lat/long position and zoom level
-var map = L.map('map').setView([51.505, -0.09], 13);
+/* Map of GeoJSON data from MegaCities.geojson */
+//declare map var in global scope
+var map;
+//function to instantiate the Leaflet map
+function createMap(){
+    //create the map & set initial center and zoom level
+    map = L.map('map', {
+        center: [35, -96],
+        zoom: 4
+    });
 
-// include tile desired tile layer (by URL), define MAX zoom extent and provide citation to source
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-}).addTo(map);
+//ADD tile layer for base map
+    L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.{ext}', {
+        minZoom: 0,
+        maxZoom: 20,
+        attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        ext: 'png'
+    }).addTo(map)
 
-// Add poinnt marker to map at designated lat/long
-var marker = L.marker([51.5,-0.09]).addTo(map)
-
-// Add circle to map at designated lat/long and providing options to style
-var circle = L.circle([51.508,-0.11],{
-    color: 'red',
-    fillColor: '#f03',
-    fillOpacity: 0.5,
-    radius: 500
-}).addTo(map);
-
-// Add polygon to map at providing lat and long of points connnecting vertices
-var polygon = L.polygon([
-    [51.509, -0.08],
-    [51.503, -0.06],
-    [51.51, -0.047]
-]).addTo(map);
-
-// Add Pop-Ups to features
-marker.bindPopup("<b>Hello World!</b><br>I am a pop-up.").openPopup();
-circle.bindPopup("I am a circle");
-polygon.bindPopup("I am a polygon");
-
-// Set an automatic stand alone pop-up not attached to an object
-var popup = L.popup()
-    .setLatLng([51.513, -0.09])
-    .setContent("I am a standalone popup.")
-    .openOn(map);
-
-// Set alert message informing user of where at on the map that was clicked in latlong
-/*function onMapClick(e){
-    alert("You clicked the map at " + e.latlng);
+    //call getData function
+    getData();
+};
+//loop created to loop through each feature when called and add a popup with feature properties
+function onEachFeature(feature,layer){
+    var popupContent="";
+    if (feature.properties){
+        for (var property in feature.properties){
+            popupContent +="<p>"+property +": " + feature.properties[property] +"</p>";
+        }
+        layer.bindPopup(popupContent);
+    }
 }
+//function to retrieve the data and place it on the map
+function getData(){
+    //load the data
+    fetch("data/CitiesLosingPopulation.geojson")
+        .then(function(response){
+            return response.json();
+        })
+        //callback creating feature marker and calling loop to add feature properties pop-up
+        .then(function(json){
+            //create marker options
+            var geojsonMarkerOptions={
+                raidus:8,
+                fillColor: "#C42D2D",
+                color: "#000",
+                weight: 1,
+                opacity: 1,
+                fillOpacity: 0.8
+            };
+            //create a Leaflet GeoJSON layer and add it to the map
+            L.geoJson(json, {
+                onEachFeature,
+                pointToLayer: function(feature,latlng){ 
+                    return L.circleMarker(latlng, geojsonMarkerOptions);
+        
+                }
+            }).addTo(map);
+        })
+    };
 
-map.on('click', onMapClick);*/
-
-var popup = L.popup();
-
-function onMapClick(e){
-    popup
-        .setLatLng(e.latlng)
-        .setContent("You clicked the map at "  + e.latlng.toString())
-        .openOn(map);
-}
-
-map.on('click', onMapClick);
-
+document.addEventListener('DOMContentLoaded',createMap)
