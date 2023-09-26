@@ -5,7 +5,7 @@ var map;
 function createMap(){
     //create the map & set initial center and zoom level
     map = L.map('map', {
-        center: [35, -96],
+        center: [38, -96],
         zoom: 4
     });
 
