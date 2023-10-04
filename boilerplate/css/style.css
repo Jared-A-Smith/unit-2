@@ -1,2 +1,63 @@
-/*Add CSS styles here*/
-#map { height: 500px; }
+/* Add CSS styles here*/
+
+#map { height: 400px; 
+    width: 80%;
+    display: inline-block;
+    }
+
+    #panel {  
+        width: 16%;
+        padding: 15px;  
+        display: inline-block;  
+        vertical-align: top;  
+    -align: center;  
+        line-height: 10px;  
+
+}
+
+div.leaflet-popup-content p{
+    margin: 0.2em 0;
+}
+
+div.leaflet-popup-content b{
+    color:black;
+}
+
+div.leaflet-popup-content-wrapper {
+    background-color:#e9aaaa
+}
+div.leaflet-popup-tip{
+    background-color:#e9aaaa;
+}
+
+#reverse.step{
+    background:#939393;
+}
+
+#forward.step{
+    background:#939393;
+}
+
+    .range-slider {  
+    width: 55%;  
+}  
+
+    .step {  
+    width: 20%;  
+}  
+
+    .step img {  
+    width: 100%;  
+}  
+
+    #forward {  
+    float: right;  
+}  
+
+    #reverse {  
+    float: left;  
+}
+
+.leaflet-popup-content p {
+    margin: 0.2em 0;
+}
